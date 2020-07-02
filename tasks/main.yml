@@ -7,7 +7,7 @@
   include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
   when: ansible_distribution == 'Debian'
 - name: Include version-specific variables for RedHat
-  include_vars: "RedHat-{{ ansible_distribution_version.split('.')[0] }}.yml"
+  include_vars: "RedHat.yml"
   when: ansible_os_family == "RedHat"
 
 - import_tasks: debian.yml
