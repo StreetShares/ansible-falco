@@ -31,6 +31,4 @@ galaxy_info:
     - system
     - security
     - logging
-dependencies:
-  - juju4.redhat_epel
 
