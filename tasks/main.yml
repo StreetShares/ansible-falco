@@ -22,6 +22,12 @@
     state: directory
     mode: '0700'
 
+- name: get falco version
+  shell: "falco --version | grep Falco | cut -d ' ' -f 3"
+  register: falco_version
+  changed_when: false
+  ignore_errors: true
+
 - name: configure falco
   template:
     src: falco.yaml.j2
@@ -48,9 +54,6 @@
 - include: rsyslog.yml
 - include: logrotate.yml
 
-- include: cgroups.yml
-  when: falco_cgroups_restriction_enable and ansible_service_mgr == 'systemd'
-
 - include: systemd.yml
   when: falco_systemd_restriction_enable and ansible_service_mgr == 'systemd'
 
@@ -61,7 +64,10 @@
   service: name=falco enabled=yes state=started
   when: >
     not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker")
+          (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker" or ansible_virtualization_type == "VirtualPC")
         )
 ## note: for containers, it will not be possible to match kernel headers/devel
 ##    which means module compilation fails. only observed on centos7
+
+- include: reporting.yml
+  when: falco_reporting
